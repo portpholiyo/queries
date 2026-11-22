@@ -1,0 +1,5 @@
+.git
+.github
+*.md
+creds-and-keys
+.env*
