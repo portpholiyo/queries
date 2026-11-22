@@ -5,12 +5,11 @@ Current state of the `queries` service. Update this file in the same change as a
 ## Context
 ```mermaid
 flowchart LR
-  V[Visitor browser] -->|HTTPS| P[Reverse proxy: TLS, routing]
+  V[Visitor browser] -->|HTTPS| P[Reverse proxy]
   P -->|loopback only| Q[queries service]
-  Q --> D[(PostgreSQL)]
-  Q -->|post, upload| S[Slack]
-  S -->|events over outbound WebSocket| Q
-  O[Owner] -->|replies in thread| S
+  Q <-->|SQL| D[(PostgreSQL)]
+  Q <-->|post / events| S[Slack]
+  O[Owner] -->|replies| S
 ```
 The service binds to loopback only and is reached through a reverse proxy. It opens one outbound WebSocket to Slack, so it needs no public callback endpoint.
 
