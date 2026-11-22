@@ -5,13 +5,13 @@ Current state of the `queries` service. Update this file in the same change as a
 ## Context
 ```mermaid
 flowchart LR
-  V[Visitor browser] -->|HTTPS| P[Reverse proxy]
-  P -->|loopback only| Q[queries service]
-  Q <-->|SQL| D[(PostgreSQL)]
-  Q <-->|post / events| S[Slack]
-  O[Owner] -->|replies| S
+  V[Visitor] --> P[Reverse proxy]
+  P --> Q[queries service]
+  Q <--> D[(PostgreSQL)]
+  Q <--> S[Slack]
+  O[Owner] -.-> S
 ```
-The service binds to loopback only and is reached through a reverse proxy. It opens one outbound WebSocket to Slack, so it needs no public callback endpoint.
+Visitors reach the service only through a reverse proxy; the service binds to loopback only. It posts queries to Slack and reads replies back over one outbound WebSocket, so it needs no public callback endpoint. The owner answers from inside Slack.
 
 ## Components
 | Path | Responsibility |
@@ -74,6 +74,7 @@ Events only trigger a re-read of that thread; messages not yet stored are added,
 ## Data
 ```mermaid
 erDiagram
+  direction LR
   QUERIES ||--o{ REPLIES : has
   QUERIES ||--o{ FILES : has
   REPLIES ||--o{ FILES : has
